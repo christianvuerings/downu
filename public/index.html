@@ -1,54 +1,174 @@
 <!doctype html>
-<html>
+<html ng-app="fbdownload">
 <head>
   <meta charset="utf-8">
   <title>FB Download</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
 </head>
 <body>
 
-  <div
-    class="fb-like"
-    data-share="true"
-    data-width="450"
-    data-show-faces="true">
+  <div ng-controller="MainController">
+    Download for {{api.me.profile.first_name}} {{api.me.profile.last_name}}.
+
+    <ol>
+      <li ng-repeat="album in api.me.albums | orderBy:'name'">
+        {{album.name}} - {{album.pictures.length}}
+
+        <ul>
+          <li ng-repeat="picture in album.pictures">
+            <img ng-src="{{picture.images[0].source}}" style="max-width:100px" />
+          </li>
+        </ul>
+      </li>
+    </ol>
   </div>
 
   <script>
-  var init = function() {
-    FB.init({
-      appId: '1020574324636035',
-      xfbml: true,
-      version: 'v2.2'
-    });
-  };
+  (function(win, angular) {
+    'use strict';
 
-  var login = function() {
-    console.log(2);
-    FB.getLoginStatus(function(response) {
-      console.log(1, response);
-      if (response.status === 'connected') {
-        console.log('Logged in.');
-      }
-      else {
-        FB.login();
-      }
-    });
-  };
+    /**
+     * Initialize all of the submodules
+     */
+    angular.module('fbdownload.controllers', []);
 
-  window.fbAsyncInit = function() {
-    init();
-    login();
-  };
+    /**
+     * fbdownload module
+     */
+    var fbdownload = angular.module('fbdownload', [
+      'fbdownload.controllers'
+    ]);
+
+    // Bind datacultures to the window object so it's globally accessible
+    win.fbdownload = fbdownload;
+
+  })(window, window.angular);
+
+  (function(window, angular) {
+    'use strict';
+
+    /**
+     * fbdownload main controller
+     */
+    angular.module('fbdownload.controllers').controller('MainController', function($http, $scope) {
+
+      $scope.api = {
+        me: {
+          profile: {},
+          albums: []
+        }
+      };
+
+      var getMeInfo = function() {
+        FB.api('/me', function(response) {
+          // console.log(response);
+          $scope.api.me.profile = response;
+          $scope.$evalAsync();
+        });
+      };
+
+      var findAlbum = function(id) {
+        for (var i = 0; i < $scope.api.me.albums.length; i++) {
+          if ($scope.api.me.albums[i].id === id) {
+            console.log('find', id, $scope.api.me.albums[i]);
+            return $scope.api.me.albums[i];
+          }
+        }
+      };
+
+      var addPicturesToAlbum = function(id, res) {
+        //console.log(id, count2);
+        var album = findAlbum(id);
+        if (!album.pictures) {
+          album.pictures = [];
+        }
+        album.pictures = album.pictures.concat(res.data);
+        $scope.$evalAsync();
+      };
+
+      var getAlbumInfo = function(id) {
+        //console.log('getAlbumInfo', id, count);
+
+        (function(id2) {
+
+          FB.api(id2 + '/photos', function(response) {
+            //console.log('album-' + id, response);
+            addPicturesToAlbum(id2, response);
+          });
+
+        })(id);
+      };
+
+      var getAlbumsInfo = function(res) {
+        for (var i = 0; i < res.data.length; i++) {
+          getAlbumInfo(res.data[i].id);
+        }
+      };
+
+      var addToAlbums = function(res) {
+        $scope.api.me.albums = $scope.api.me.albums.concat(res.data);
+        getAlbumsInfo(res);
+        $scope.$evalAsync();
+        if (res.paging && res.paging.next) {
+          $http.get(res.paging.next).success(function(response) {
+            addToAlbums(response);
+          });
+        }
+      };
+
+      var getAlbums = function() {
+        FB.api('/me/albums', function(response) {
+          addToAlbums(response);
+          //console.log('me/albums', response);
+        });
+      };
+
+      var init = function() {
+        FB.init({
+          appId: '1020574324636035',
+          xfbml: true,
+          version: 'v2.2'
+        });
+      };
+
+      function login() {
+        FB.getLoginStatus(function(response) {
+          //console.log(1, response);
+          if (response.status === 'connected') {
+            //console.log('Logged in.');
+            getMeInfo();
+            getAlbums();
+          }
+          else {
+            FB.login(function(response) {
+              //console.log(response);
+            }, {
+              scope: 'user_photos',
+              auth_type: 'rerequest'
+            });
+          }
+        });
+      }
+
+      window.fbAsyncInit = function() {
+        init();
+        login();
+      };
+
+    });
+
+  })(window, window.angular);
 
   (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
   </script>
 
-  Test
+
 </body>
 </html>
