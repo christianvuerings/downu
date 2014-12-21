@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>FB Download</title>
+</head>
+<body>
+
+  <div
+    class="fb-like"
+    data-share="true"
+    data-width="450"
+    data-show-faces="true">
+  </div>
+
+  <script>
+  var init = function() {
+    FB.init({
+      appId: '1020574324636035',
+      xfbml: true,
+      version: 'v2.2'
+    });
+  };
+
+  var login = function() {
+    console.log(2);
+    FB.getLoginStatus(function(response) {
+      console.log(1, response);
+      if (response.status === 'connected') {
+        console.log('Logged in.');
+      }
+      else {
+        FB.login();
+      }
+    });
+  };
+
+  window.fbAsyncInit = function() {
+    init();
+    login();
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+  </script>
+
+  Test
+</body>
+</html>

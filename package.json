@@ -1,0 +1,23 @@
+{
+  "name": "fbdownload",
+  "version": "1.0.0",
+  "description": "Download facebook pics / videos & info",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianv/fbdownload.git"
+  },
+  "author": "Christian Vuerings <vueringschristian@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/christianv/fbdownload/issues"
+  },
+  "homepage": "https://github.com/christianv/fbdownload",
+  "dependencies": {
+    "express": "^4.10.6"
+  }
+}
