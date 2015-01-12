@@ -92,11 +92,11 @@
       function deferredAddZip(url, folder, filename, zip) {
         var deferred = $q.defer();
         JSZipUtils.getBinaryContent(url, function (err, data) {
-          console.log(err, data);
+          // console.log(err, data);
           if(err) {
             deferred.reject(err);
           } else {
-            console.log(folder, filename);
+            // console.log(folder, filename);
             zip.folder(folder).file(filename, data, {binary:true});
             deferred.resolve(data);
           }
