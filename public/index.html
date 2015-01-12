@@ -4,20 +4,47 @@
   <meta charset="utf-8">
   <title>FB Download</title>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
+
+  <script src="js/jszip-utils.js"></script>
+  <script src="js/fileSaver.js"></script>
+  <script src="js/jszip.js"></script>
+  <script src="js/angular.js"></script>
+
+  <style>
+    html {
+      box-sizing: border-box;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+
+    .fbdownload-album {
+      clear: both;
+    }
+    .fbdownload-list-item {
+      list-style-type: none;
+    }
+    .fbdownload-list-item-image {
+      float: left;
+      max-height: 100px;
+    }
+  </style>
 </head>
 <body>
 
   <div ng-controller="MainController">
     Download for {{api.me.profile.first_name}} {{api.me.profile.last_name}}.
+    <div ng-if="api.me.albums" ng-controller="DownloadController">
+      <button ng-click="downloadAlbums(api.me.albums)">Download All</button>
+    </div>
 
     <ol>
-      <li ng-repeat="album in api.me.albums | orderBy:'name'">
+      <li ng-repeat="album in api.me.albums | orderBy:'name' | limitTo: 3" class="fbdownload-album">
         {{album.name}} - {{album.pictures.length}}
 
         <ul>
-          <li ng-repeat="picture in album.pictures">
-            <img ng-src="{{picture.images[0].source}}" style="max-width:100px" />
+          <li class="fbdownload-list-item" ng-repeat="picture in album.pictures">
+            <img ng-src="{{picture.images[0].source}}" class="fbdownload-list-item-image" />
           </li>
         </ul>
       </li>
@@ -45,6 +72,72 @@
 
   })(window, window.angular);
 
+
+  (function(window, angular) {
+    'use strict';
+
+    /**
+     * fbdownload download controller
+     */
+    angular.module('fbdownload.controllers').controller('DownloadController', function($http, $q, $scope) {
+
+      /**
+       * Fetch the content, add it to the JSZip object
+       * @param {String} url the url of the content to fetch.
+       * @param {String} folder name of the folder used in the JSZip object.
+       * @param {String} filename the filename to use in the JSZip object.
+       * @param {JSZip} zip the JSZip instance.
+       * @return {jQuery.Deferred} the deferred containing the data.
+       */
+      function deferredAddZip(url, folder, filename, zip) {
+        var deferred = $q.defer();
+        JSZipUtils.getBinaryContent(url, function (err, data) {
+          console.log(err, data);
+          if(err) {
+            deferred.reject(err);
+          } else {
+            console.log(folder, filename);
+            zip.folder(folder).file(filename, data, {binary:true});
+            deferred.resolve(data);
+          }
+        });
+        return deferred.promise;
+      }
+
+      var downloadAlbums = function(albums) {
+
+        var zip = new JSZip();
+        var deferreds = [];
+
+        for (var i = 0; i < albums.length; i++) {
+          var album = albums[i];
+
+          for (var j = 0; j < album.pictures.length; j++) {
+
+            var pictureUrl = album.pictures[j].images[0].source;
+            var pictureName = pictureUrl.replace(/.*\//g, '').split('?')[0];
+
+            deferreds.push(deferredAddZip(pictureUrl, album.name, pictureName, zip));
+          }
+        }
+
+        $q.all(deferreds).then(function() {
+          var blob = zip.generate({
+            type: 'blob'
+          });
+
+          // see FileSaver.js
+          saveAs(blob, 'Facebook Pictures.zip');
+        });
+
+      };
+
+      $scope.downloadAlbums = downloadAlbums;
+    });
+
+  })(window, window.angular);
+
+
   (function(window, angular) {
     'use strict';
 
@@ -71,7 +164,7 @@
       var findAlbum = function(id) {
         for (var i = 0; i < $scope.api.me.albums.length; i++) {
           if ($scope.api.me.albums[i].id === id) {
-            console.log('find', id, $scope.api.me.albums[i]);
+            // console.log('find', id, $scope.api.me.albums[i]);
             return $scope.api.me.albums[i];
           }
         }
