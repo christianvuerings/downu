@@ -56,6 +56,11 @@ body {
   margin-left: 15px;
   text-align: center;
 }
+.fbdownload-intro {
+  font-size: 40px;
+  line-height: 1.8;
+  margin-bottom: 10vh;
+}
 .fbdownload-list-item {
   list-style-type: none;
 }
@@ -79,17 +84,45 @@ body {
   margin: 0 auto;
 }
 .fbdownload-pane-footer {
-  background: #22202a;
   clear: both;
-  color: #fff;
   font-size: 20px;
-  padding: 50px 10px;
   text-align: center;
 }
-.fbdownload-pane-footer a {
-  color: #fff;
+.fbdownload-pane-footer-line {
+  opacity: 0.2;
+  padding: 50px 10px;
 }
-.fbdownload-pane-footer a:focus, .fbdownload-pane-footer a:hover {
+.fbdownload-pane-footer-line a {
+  color: #000;
+}
+.fbdownload-pane-footer-links {
+  background: #22202a;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  padding: 50px 10px;
+}
+
+.fbdownload-pane-footer-links .fbdownload-button-link {
+  background: transparent;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: normal;
+  justify-content: center;
+  text-decoration: underline;
+}
+.fbdownload-pane-footer-links a, .fbdownload-button-link {
+  color: #fff;
+  padding: 15px;
+}
+.fbdownload-pane-footer-links li {
+  align-self: center;
+}
+.fbdownload-pane-footer a:focus, .fbdownload-pane-footer a:hover,
+.fbdownload-pane-footer-links .fbdownload-button-link:focus, .fbdownload-pane-footer-links .fbdownload-button-link:hover {
   text-decoration: none;
 }
 

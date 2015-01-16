@@ -19,6 +19,17 @@
   <div ng-controller="MainController">
 
     <div class="fbdownload-pane-1">
+      <div ng-if="!api.me.albums.length" class="fbdownload-intro">
+        <div class="fbdownload-intro">
+          Download<br/>Your High-Res <img src="images/facebook.svg" alt="facebook" width="30" /> Photos
+        </div>
+
+        <div>
+          <button class="fbdownload-download-button" ng-click="login()">
+            <div class="fbdownload-download-button-text">Login</div>
+          </button>
+        </div>
+      </div>
       <div ng-if="api.me.albums" ng-controller="DownloadController" class="fbdownload-pane-1-container">
 
         <div class="fbdownload-chart-container">
@@ -40,7 +51,7 @@
       </div>
     </div>
 
-    <div class="fbdownload-pane-2" ng-if="api.me.albums">
+    <div class="fbdownload-pane-2" ng-if="api.me.albums.length && debug">
       <ol>
         <li ng-repeat="album in api.me.albums | orderBy:'name' | limitTo: 3" class="fbdownload-album">
           {{album.name}} - {{album.pictures.length}}
@@ -57,10 +68,10 @@
     <div class="fbdownload-pane-footer">
       <ul class="fbdownload-pane-footer-links">
         <li>
-          <a href="F">Feedback</a>
+          <a href="https://github.com/christianv/fbdownload/issues">Feedback</a>
         </li>
-        <li>
-          <button ng-click="logout">Logout</button>
+        <li ng-if="api.me.albums">
+          <button class="fbdownload-button-link" ng-click="logout()">Logout</button>
         </li>
       </ul>
       <div class="fbdownload-pane-footer-line">
@@ -375,10 +386,19 @@
         });
       }
 
+      var logout = function() {
+        FB.logout(function(response) {
+          window.location.reload();
+        });
+      };
+
       window.fbAsyncInit = function() {
         init();
         login();
       };
+
+      // $scope.login = login;
+      $scope.logout = logout;
 
     });
 
