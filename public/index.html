@@ -4,51 +4,69 @@
   <meta charset="utf-8">
   <title>FB Download</title>
 
-
   <script src="js/jszip-utils.js"></script>
   <script src="js/fileSaver.js"></script>
   <script src="js/jszip.js"></script>
   <script src="js/angular.js"></script>
+  <script src="js/highcharts-standalone.js"></script>
+  <script src="js/highcharts.js"></script>
+  <script src="js/highcharts-ng.js"></script>
 
-  <style>
-    html {
-      box-sizing: border-box;
-    }
-    *, *:before, *:after {
-      box-sizing: inherit;
-    }
-
-    .fbdownload-album {
-      clear: both;
-    }
-    .fbdownload-list-item {
-      list-style-type: none;
-    }
-    .fbdownload-list-item-image {
-      float: left;
-      max-height: 100px;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
-<body>
+<body ng-cloak>
 
   <div ng-controller="MainController">
-    Download for {{api.me.profile.first_name}} {{api.me.profile.last_name}}.
-    <div ng-if="api.me.albums" ng-controller="DownloadController">
-      <button ng-click="downloadAlbums(api.me.albums)">Download All</button>
+
+    <div class="fbdownload-pane-1">
+      <div ng-if="api.me.albums" ng-controller="DownloadController" class="fbdownload-pane-1-container">
+
+        <div class="fbdownload-chart-container">
+          <div class="fbdownload-chart-progress" data-highchart config="chartConfig"></div>
+          <img class="fbdownload-profile-picture" height="200" width="200" ng-if="api.me.picture" ng-src="{{api.me.picture}}" />
+        </div>
+
+        <div class="fbdownload-download">
+          <button class="fbdownload-download-button" ng-click="downloadAlbums(api.me.albums)">
+            <div class="fbdownload-download-button-text">Download</div>
+          </button>
+          <div class="fbdownload-download-description">
+            all your pictures
+          </div>
+        </div>
+        <div data-ng-if="counts.total && debug">
+          {{counts.done}} / {{counts.total}} => {{counts.done/counts.total*100 | number:2}}%
+        </div>
+      </div>
     </div>
 
-    <ol>
-      <li ng-repeat="album in api.me.albums | orderBy:'name' | limitTo: 3" class="fbdownload-album">
-        {{album.name}} - {{album.pictures.length}}
+    <div class="fbdownload-pane-2" ng-if="api.me.albums">
+      <ol>
+        <li ng-repeat="album in api.me.albums | orderBy:'name' | limitTo: 3" class="fbdownload-album">
+          {{album.name}} - {{album.pictures.length}}
 
-        <ul>
-          <li class="fbdownload-list-item" ng-repeat="picture in album.pictures">
-            <img ng-src="{{picture.images[0].source}}" class="fbdownload-list-item-image" />
-          </li>
-        </ul>
-      </li>
-    </ol>
+          <ul>
+            <li class="fbdownload-list-item" ng-repeat="picture in album.pictures">
+              <img ng-src="{{picture.images[0].source}}" class="fbdownload-list-item-image" />
+            </li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <div class="fbdownload-pane-footer">
+      <ul class="fbdownload-pane-footer-links">
+        <li>
+          <a href="F">Feedback</a>
+        </li>
+        <li>
+          <button ng-click="logout">Logout</button>
+        </li>
+      </ul>
+      <div class="fbdownload-pane-footer-line">
+        Made with &hearts; by <a href="http://denbuzze.com/">Christian Vuerings</a>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -64,7 +82,8 @@
      * fbdownload module
      */
     var fbdownload = angular.module('fbdownload', [
-      'fbdownload.controllers'
+      'fbdownload.controllers',
+      'highcharts-ng'
     ]);
 
     // Bind datacultures to the window object so it's globally accessible
@@ -80,6 +99,14 @@
      * fbdownload download controller
      */
     angular.module('fbdownload.controllers').controller('DownloadController', function($http, $q, $scope) {
+
+      var resetCounts = function() {
+        $scope.counts = {
+          done: 0,
+          total: 0
+        };
+      };
+      resetCounts();
 
       /**
        * Fetch the content, add it to the JSZip object
@@ -97,29 +124,114 @@
             deferred.reject(err);
           } else {
             // console.log(folder, filename);
-            zip.folder(folder).file(filename, data, {binary:true});
+            zip.folder(folder).file(filename, data, {
+              binary:true
+            });
             deferred.resolve(data);
+            $scope.counts.done++;
+            updateChart();
           }
         });
         return deferred.promise;
       }
+
+      var updateChart = function() {
+        var percentage = 0;
+        if ($scope.counts.total) {
+          percentage = $scope.counts.done / $scope.counts.total;
+        }
+        $scope.chartConfig.series[0].data[0][1] = percentage;
+        $scope.chartConfig.series[0].data[1][1] = 1 - percentage;
+      };
+
+      var initializeChart = function() {
+        $scope.chartConfig = {
+          loading: false,
+          options: {
+            chart: {
+              // renderTo: 'container',
+              backgroundColor:'rgba(255, 255, 255, 0)',
+              marginBottom: 0,
+              marginLeft: 0,
+              marginRight: 0,
+              marginTop: 0,
+              spacingBottom: 0,
+              spacingLeft: 0,
+              spacingRight: 0,
+              spacingTop: 0,
+              type: 'pie'
+            },
+            tooltip: {
+              formatter: function() {
+                return false;
+              }
+            },
+            plotOptions: {
+              pie: {
+                colors: ['#7BB346', '#fff'],
+                states: {
+                  hover: {
+                    enabled: false
+                  }
+                }
+              }
+            }
+          },
+          credits: {
+            enabled: false
+          },
+          exporting: {
+            enabled: false
+          },
+          title: {
+            text: '',
+            align: 'center',
+            verticalAlign: 'middle',
+            y: 0,
+            useHTML: true,
+            style: {
+              fontFamily: '',
+              fontSize: ''
+            }
+          },
+          series: [{
+            animation: false,
+            name: 'Progress',
+            data: [['Complete', 0],['Incomplete', 1]],
+            size: '100%',
+            borderWidth: 0,
+            showInLegend: false,
+            dataLabels: {
+              enabled: false
+            }
+          }]
+        };
+      };
 
       var downloadAlbums = function(albums) {
 
         var zip = new JSZip();
         var deferreds = [];
 
+        resetCounts();
+
         for (var i = 0; i < albums.length; i++) {
           var album = albums[i];
+
+          if (!album.pictures) {
+            console.log(album);
+          }
 
           for (var j = 0; j < album.pictures.length; j++) {
 
             var pictureUrl = album.pictures[j].images[0].source;
             var pictureName = pictureUrl.replace(/.*\//g, '').split('?')[0];
 
+            $scope.counts.total++;
             deferreds.push(deferredAddZip(pictureUrl, album.name, pictureName, zip));
           }
         }
+        updateChart();
 
         $q.all(deferreds).then(function() {
           var blob = zip.generate({
@@ -127,11 +239,15 @@
           });
 
           // see FileSaver.js
-          saveAs(blob, 'Facebook Pictures.zip');
+          saveAs(blob, $scope.api.me.profile.first_name + ' ' + $scope.api.me.profile.last_name + ' - Facebook Pictures.zip');
+          resetCounts();
+          updateChart();
         });
 
       };
 
+      initializeChart();
+      updateChart();
       $scope.downloadAlbums = downloadAlbums;
     });
 
@@ -149,14 +265,28 @@
       $scope.api = {
         me: {
           profile: {},
+          picture: '',
           albums: []
         }
       };
+      $scope.debug = false;
 
       var getMeInfo = function() {
         FB.api('/me', function(response) {
           // console.log(response);
           $scope.api.me.profile = response;
+          $scope.$evalAsync();
+        });
+      };
+
+      var getMePicture = function() {
+        FB.api('/me/picture', {
+          redirect: false,
+          width: '100',
+          height: '100'
+        }, function(response) {
+          // console.log(response);
+          $scope.api.me.picture = response.data.url;
           $scope.$evalAsync();
         });
       };
@@ -231,6 +361,7 @@
           if (response.status === 'connected') {
             //console.log('Logged in.');
             getMeInfo();
+            getMePicture();
             getAlbums();
           }
           else {
@@ -261,7 +392,6 @@
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
   </script>
-
 
 </body>
 </html>

@@ -1,0 +1,103 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Helvetica;
+}
+
+.fbdownload-album {
+  clear: both;
+}
+.fbdownload-chart-container {
+  position: relative;
+}
+.fbdownload-chart-progress {
+  height: 230px;
+  margin: 0 auto;
+  width: 230px;
+}
+.fbdownload-download {
+  align-items: center;
+  display: flex;
+  margin-top: 40px;
+}
+.fbdownload-download-button {
+  background: #22202a;
+  border: 4px solid #7BB346;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 10px;
+}
+.fbdownload-download-button-text {
+  color: #fff;
+  font-family: Helvetica;
+  font-size: 30px;
+}
+.fbdownload-download-button:hover .fbdownload-download-button-text {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 37%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.4) 59%, rgba(0, 0, 0, 0.1) 62%);
+  text-decoration: underline;
+}
+.fbdownload-profile-picture {
+  border-radius: 50%;
+  left: calc(50% - 100px);
+  position: absolute;
+  top: 15px;
+}
+.fbdownload-download-description {
+  font-family: Helvetica;
+  font-size: 30px;
+  margin-left: 15px;
+  text-align: center;
+}
+.fbdownload-list-item {
+  list-style-type: none;
+}
+.fbdownload-list-item-image {
+  float: left;
+  max-height: 100px;
+}
+.fbdownload-pane-1 {
+  background-color: #343343;
+  background: radial-gradient(ellipse at center, #343343 0%,#22202a 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  height: 80vh;
+  justify-content: center;
+  min-height: 500px;
+  text-align: center;
+}
+.fbdownload-pane-1-container {
+  margin: 0 auto;
+}
+.fbdownload-pane-footer {
+  background: #22202a;
+  clear: both;
+  color: #fff;
+  font-size: 20px;
+  padding: 50px 10px;
+  text-align: center;
+}
+.fbdownload-pane-footer a {
+  color: #fff;
+}
+.fbdownload-pane-footer a:focus, .fbdownload-pane-footer a:hover {
+  text-decoration: none;
+}
+
+@media only screen and (max-width: 500px) {
+  .fbdownload-download {
+    flex-direction: column;
+  }
+  .fbdownload-download-description {
+    margin: 20px 0 0 0;
+  }
+}
