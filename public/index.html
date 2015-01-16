@@ -19,7 +19,12 @@
   <div ng-controller="MainController">
 
     <div class="fbdownload-pane-1">
-      <div ng-if="!api.me.albums.length" class="fbdownload-intro">
+      <div ng-if="loading" class="fbdownload-intro">
+        <div class="fbdownload-intro">
+          Loading...
+        </div>
+      </div>
+      <div ng-if="!api.me.albums.length && !loading" class="fbdownload-intro">
         <div class="fbdownload-intro">
           Download<br/>Your High-Res <img src="images/facebook.svg" alt="facebook" width="30" /> Photos
         </div>
@@ -30,7 +35,7 @@
           </button>
         </div>
       </div>
-      <div ng-if="api.me.albums" ng-controller="DownloadController" class="fbdownload-pane-1-container">
+      <div ng-if="api.me.albums.length && !loading" ng-controller="DownloadController" class="fbdownload-pane-1-container">
 
         <div class="fbdownload-chart-container">
           <div class="fbdownload-chart-progress" data-highchart config="chartConfig"></div>
@@ -70,7 +75,7 @@
         <li>
           <a href="https://github.com/christianv/fbdownload/issues">Feedback</a>
         </li>
-        <li ng-if="api.me.albums">
+        <li ng-if="api.me.albums.length">
           <button class="fbdownload-button-link" ng-click="logout()">Logout</button>
         </li>
       </ul>
@@ -273,13 +278,17 @@
      */
     angular.module('fbdownload.controllers').controller('MainController', function($http, $scope) {
 
-      $scope.api = {
-        me: {
-          profile: {},
-          picture: '',
-          albums: []
-        }
+      var resetData = function() {
+        $scope.api = {
+          me: {
+            profile: {},
+            picture: '',
+            albums: []
+          }
+        };
       };
+
+      $scope.loading = true;
       $scope.debug = false;
 
       var getMeInfo = function() {
@@ -353,6 +362,7 @@
 
       var getAlbums = function() {
         FB.api('/me/albums', function(response) {
+          $scope.loading = false;
           addToAlbums(response);
           //console.log('me/albums', response);
         });
@@ -364,40 +374,54 @@
           xfbml: true,
           version: 'v2.2'
         });
+
+        };
+
+      var loadFacebookData = function() {
+        getMeInfo();
+        getMePicture();
+        getAlbums();
       };
 
-      function login() {
+      var checkFacebookStatus = function() {
         FB.getLoginStatus(function(response) {
           //console.log(1, response);
           if (response.status === 'connected') {
             //console.log('Logged in.');
-            getMeInfo();
-            getMePicture();
-            getAlbums();
+            loadFacebookData();
+          } else {
+            $scope.loading = false;
+            $scope.$evalAsync();
           }
-          else {
-            FB.login(function(response) {
-              //console.log(response);
-            }, {
-              scope: 'user_photos',
-              auth_type: 'rerequest'
-            });
-          }
+        });
+      };
+
+      function login() {
+        FB.login(function(response) {
+          // console.log(3, response);
+          $scope.loading = true;
+          $scope.$evalAsync();
+          checkFacebookStatus();
+        }, {
+          scope: 'user_photos',
+          auth_type: 'rerequest'
         });
       }
 
       var logout = function() {
         FB.logout(function(response) {
-          window.location.reload();
+          resetData();
+          $scope.$evalAsync();
         });
       };
 
       window.fbAsyncInit = function() {
         init();
-        login();
+        resetData();
+        checkFacebookStatus();
       };
 
-      // $scope.login = login;
+      $scope.login = login;
       $scope.logout = logout;
 
     });
