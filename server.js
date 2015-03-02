@@ -22,6 +22,7 @@ app.use('/', express.static(__dirname + '/public'));
 // When in production, force SSL
 console.log('environment', env);
 if (env === 'production') {
+  console.log('environment22', env);
   app.use(forceSSL);
 }
 
