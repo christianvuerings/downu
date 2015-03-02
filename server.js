@@ -9,6 +9,7 @@ var env = process.env.NODE_ENV || 'development';
  * Since we're showing personal pictures, make sure we only pass data over https
  */
 var forceSSL = function(req, res, next) {
+  console.log(1, req.headers);
   if (req.headers['x-forwarded-proto'] !== 'https') {
     return res.redirect(['https://', req.get('Host'), req.url].join(''));
   }
