@@ -140,8 +140,10 @@
             deferred.reject(err);
           } else {
             // console.log(folder, filename);
-            zip.folder(folder).file(filename, data, {
-              binary:true
+            // We need to replace all the slashes in a folder name with
+            // dashes, otherwise sub folders will be created
+            zip.folder(folder.replace(/\//g, '-')).file(filename, data, {
+              binary: true
             });
             deferred.resolve(data);
             $scope.counts.done++;
