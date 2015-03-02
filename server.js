@@ -19,6 +19,7 @@ var forceSSL = function(req, res, next) {
 app.use('/', express.static(__dirname + '/public'));
 
 // When in production, force SSL
+console.log('environment', env);
 if (env === 'production') {
   app.use(forceSSL);
 }
