@@ -15,19 +15,13 @@ var forceSSL = function(req, res, next) {
   return next();
 };
 
-/**
- * Configuration
- */
-app.configure(function () {
+// List public for the static assets
+app.use('/', express.static(__dirname + '/public'));
 
-  // When in production, force SSL
-  if (env === 'production') {
-    app.use(forceSSL);
-  }
-
-  // List public for the static assets
-  app.use('/', express.static(__dirname + '/public'));
-});
+// When in production, force SSL
+if (env === 'production') {
+  app.use(forceSSL);
+}
 
 var port = process.env.PORT || 5000;
 server.listen(port);
