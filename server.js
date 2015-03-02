@@ -16,15 +16,15 @@ var forceSSL = function(req, res, next) {
   return next();
 };
 
-// List public for the static assets
-app.use('/', express.static(__dirname + '/public'));
-
 // When in production, force SSL
 console.log('environment', env);
 if (env === 'production') {
   console.log('environment22', env);
   app.use(forceSSL);
 }
+
+// List public for the static assets
+app.use('/', express.static(__dirname + '/public'));
 
 var port = process.env.PORT || 5000;
 server.listen(port);
