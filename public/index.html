@@ -323,13 +323,22 @@
       };
 
       var addPicturesToAlbum = function(id, res) {
-        //console.log(id, count2);
         var album = findAlbum(id);
         if (!album.pictures) {
           album.pictures = [];
         }
         album.pictures = album.pictures.concat(res.data);
         $scope.$evalAsync();
+
+        if (res.paging && res.paging.next) {
+
+          (function(id2) {
+            $http.get(res.paging.next).success(function(response) {
+              addPicturesToAlbum(id2, response);
+            });
+          })(id);
+
+        }
       };
 
       var getAlbumInfo = function(id) {
