@@ -26,6 +26,7 @@ body {
 .fbdownload-download {
   align-items: center;
   display: flex;
+  font-size: 30px;
   margin-top: 40px;
 }
 .fbdownload-download-button {
@@ -51,10 +52,7 @@ body {
   top: 15px;
 }
 .fbdownload-download-description {
-  font-family: Helvetica;
-  font-size: 30px;
   margin-left: 15px;
-  text-align: center;
 }
 .fbdownload-intro {
   font-size: 40px;

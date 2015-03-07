@@ -42,7 +42,7 @@
           <img class="fbdownload-profile-picture" height="200" width="200" ng-if="api.me.picture" ng-src="{{api.me.picture}}" />
         </div>
 
-        <div class="fbdownload-download">
+        <div data-ng-if="!counts.percentage" class="fbdownload-download">
           <button class="fbdownload-download-button" ng-click="downloadAlbums(api.me.albums)">
             <div class="fbdownload-download-button-text">Download</div>
           </button>
@@ -50,8 +50,10 @@
             all your pictures
           </div>
         </div>
-        <div data-ng-if="counts.total && debug">
-          {{counts.done}} / {{counts.total}} => {{counts.done/counts.total*100 | number:2}}%
+        <div data-ng-if="counts.percentage" class="fbdownload-download">
+          <div>
+            Downloading: {{counts.percentage * 100 | number:2}}%
+          </div>
         </div>
       </div>
     </div>
@@ -119,7 +121,8 @@
       var resetCounts = function() {
         $scope.counts = {
           done: 0,
-          total: 0
+          total: 0,
+          percentage: 0
         };
       };
       resetCounts();
@@ -154,12 +157,12 @@
       }
 
       var updateChart = function() {
-        var percentage = 0;
+        $scope.counts.percentage = 0;
         if ($scope.counts.total) {
-          percentage = $scope.counts.done / $scope.counts.total;
+          $scope.counts.percentage = $scope.counts.done / $scope.counts.total;
         }
-        $scope.chartConfig.series[0].data[0][1] = percentage;
-        $scope.chartConfig.series[0].data[1][1] = 1 - percentage;
+        $scope.chartConfig.series[0].data[0][1] = $scope.counts.percentage;
+        $scope.chartConfig.series[0].data[1][1] = 1 - $scope.counts.percentage;
       };
 
       var initializeChart = function() {
@@ -226,6 +229,22 @@
         };
       };
 
+      var downloadZip = function(zip) {
+        if (JSZip.support.blob) {
+          var blob = zip.generate({
+            type: 'blob'
+          });
+
+          // see FileSaver.js
+          saveAs(blob, $scope.api.me.profile.first_name + ' ' + $scope.api.me.profile.last_name + ' - Facebook Pictures.zip');
+        } else {
+          // Download with data URI
+          window.location = 'data:application/zip;base64,' + zip.generate({
+            type: 'base64'
+          });
+        }
+      };
+
       var downloadAlbums = function(albums) {
 
         var zip = new JSZip();
@@ -252,12 +271,7 @@
         updateChart();
 
         $q.all(deferreds).then(function() {
-          var blob = zip.generate({
-            type: 'blob'
-          });
-
-          // see FileSaver.js
-          saveAs(blob, $scope.api.me.profile.first_name + ' ' + $scope.api.me.profile.last_name + ' - Facebook Pictures.zip');
+          downloadZip(zip);
           resetCounts();
           updateChart();
         });
