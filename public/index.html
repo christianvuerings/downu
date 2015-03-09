@@ -24,7 +24,7 @@
           Loading...
         </div>
       </div>
-      <div ng-if="!api.me.albums.length && !loading" class="fbdownload-intro">
+      <div ng-if="!api.me.profile.first_name && !loading" class="fbdownload-intro">
         <div class="fbdownload-intro">
           Download<br/>Your High-Res <img src="images/facebook.svg" alt="facebook" width="30" /> Photos
         </div>
@@ -35,7 +35,7 @@
           </button>
         </div>
       </div>
-      <div ng-if="api.me.albums.length && !loading" ng-controller="DownloadController" class="fbdownload-pane-1-container">
+      <div ng-if="api.me.profile.first_name && !loading" ng-controller="DownloadController" class="fbdownload-pane-1-container">
 
         <div class="fbdownload-chart-container">
           <div class="fbdownload-chart-progress" data-highchart config="chartConfig"></div>
