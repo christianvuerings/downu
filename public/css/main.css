@@ -12,61 +12,61 @@ body {
   font-family: Helvetica;
 }
 
-.fbdownload-album {
+.downu-album {
   clear: both;
 }
-.fbdownload-chart-container {
+.downu-chart-container {
   position: relative;
 }
-.fbdownload-chart-progress {
+.downu-chart-progress {
   height: 230px;
   margin: 0 auto;
   width: 230px;
 }
-.fbdownload-download {
+.downu-download {
   align-items: center;
   display: flex;
   font-size: 30px;
   margin-top: 40px;
 }
-.fbdownload-download-button {
+.downu-download-button {
   background: #22202a;
   border: 4px solid #7BB346;
   border-radius: 15px;
   cursor: pointer;
   padding: 10px;
 }
-.fbdownload-download-button-text {
+.downu-download-button-text {
   color: #fff;
   font-family: Helvetica;
   font-size: 30px;
 }
-.fbdownload-download-button:hover .fbdownload-download-button-text {
+.downu-download-button:hover .downu-download-button-text {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 37%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.4) 59%, rgba(0, 0, 0, 0.1) 62%);
   text-decoration: underline;
 }
-.fbdownload-profile-picture {
+.downu-profile-picture {
   border-radius: 50%;
   left: calc(50% - 100px);
   position: absolute;
   top: 15px;
 }
-.fbdownload-download-description {
+.downu-download-description {
   margin-left: 15px;
 }
-.fbdownload-intro {
+.downu-intro {
   font-size: 40px;
   line-height: 1.8;
   margin-bottom: 10vh;
 }
-.fbdownload-list-item {
+.downu-list-item {
   list-style-type: none;
 }
-.fbdownload-list-item-image {
+.downu-list-item-image {
   float: left;
   max-height: 100px;
 }
-.fbdownload-pane-1 {
+.downu-pane-1 {
   background-color: #343343;
   background: radial-gradient(ellipse at center, #343343 0%,#22202a 100%);
   color: #fff;
@@ -78,22 +78,22 @@ body {
   min-height: 500px;
   text-align: center;
 }
-.fbdownload-pane-1-container {
+.downu-pane-1-container {
   margin: 0 auto;
 }
-.fbdownload-pane-footer {
+.downu-pane-footer {
   clear: both;
   font-size: 20px;
   text-align: center;
 }
-.fbdownload-pane-footer-line {
+.downu-pane-footer-line {
   opacity: 0.2;
   padding: 50px 10px;
 }
-.fbdownload-pane-footer-line a {
+.downu-pane-footer-line a {
   color: #000;
 }
-.fbdownload-pane-footer-links {
+.downu-pane-footer-links {
   background: #22202a;
   color: #fff;
   display: flex;
@@ -102,7 +102,7 @@ body {
   padding: 50px 10px;
 }
 
-.fbdownload-pane-footer-links .fbdownload-button-link {
+.downu-pane-footer-links .downu-button-link {
   background: transparent;
   border: 0;
   color: #fff;
@@ -112,23 +112,23 @@ body {
   justify-content: center;
   text-decoration: underline;
 }
-.fbdownload-pane-footer-links a, .fbdownload-button-link {
+.downu-pane-footer-links a, .downu-button-link {
   color: #fff;
   padding: 15px;
 }
-.fbdownload-pane-footer-links li {
+.downu-pane-footer-links li {
   align-self: center;
 }
-.fbdownload-pane-footer a:focus, .fbdownload-pane-footer a:hover,
-.fbdownload-pane-footer-links .fbdownload-button-link:focus, .fbdownload-pane-footer-links .fbdownload-button-link:hover {
+.downu-pane-footer a:focus, .downu-pane-footer a:hover,
+.downu-pane-footer-links .downu-button-link:focus, .downu-pane-footer-links .downu-button-link:hover {
   text-decoration: none;
 }
 
 @media only screen and (max-width: 500px) {
-  .fbdownload-download {
+  .downu-download {
     flex-direction: column;
   }
-  .fbdownload-download-description {
+  .downu-download-description {
     margin: 20px 0 0 0;
   }
 }

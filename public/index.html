@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="fbdownload">
+<html ng-app="downu">
 <head>
   <meta charset="utf-8">
   <title>FB Download</title>
@@ -18,39 +18,39 @@
 
   <div ng-controller="MainController">
 
-    <div class="fbdownload-pane-1">
-      <div ng-if="loading" class="fbdownload-intro">
-        <div class="fbdownload-intro">
+    <div class="downu-pane-1">
+      <div ng-if="loading" class="downu-intro">
+        <div class="downu-intro">
           Loading...
         </div>
       </div>
-      <div ng-if="!api.me.profile.first_name && !loading" class="fbdownload-intro">
-        <div class="fbdownload-intro">
+      <div ng-if="!api.me.profile.first_name && !loading" class="downu-intro">
+        <div class="downu-intro">
           Download<br/>Your High-Res <img src="images/facebook.svg" alt="facebook" width="30" /> Photos
         </div>
 
         <div>
-          <button class="fbdownload-download-button" ng-click="login()">
-            <div class="fbdownload-download-button-text">Login</div>
+          <button class="downu-download-button" ng-click="login()">
+            <div class="downu-download-button-text">Login</div>
           </button>
         </div>
       </div>
-      <div ng-if="api.me.profile.first_name && !loading" ng-controller="DownloadController" class="fbdownload-pane-1-container">
+      <div ng-if="api.me.profile.first_name && !loading" ng-controller="DownloadController" class="downu-pane-1-container">
 
-        <div class="fbdownload-chart-container">
-          <div class="fbdownload-chart-progress" data-highchart config="chartConfig"></div>
-          <img class="fbdownload-profile-picture" height="200" width="200" ng-if="api.me.picture" ng-src="{{api.me.picture}}" />
+        <div class="downu-chart-container">
+          <div class="downu-chart-progress" data-highchart config="chartConfig"></div>
+          <img class="downu-profile-picture" height="200" width="200" ng-if="api.me.picture" ng-src="{{api.me.picture}}" />
         </div>
 
-        <div data-ng-if="!counts.percentage" class="fbdownload-download">
-          <button class="fbdownload-download-button" ng-click="downloadAlbums(api.me.albums)">
-            <div class="fbdownload-download-button-text">Download</div>
+        <div data-ng-if="!counts.percentage" class="downu-download">
+          <button class="downu-download-button" ng-click="downloadAlbums(api.me.albums)">
+            <div class="downu-download-button-text">Download</div>
           </button>
-          <div class="fbdownload-download-description">
+          <div class="downu-download-description">
             all your pictures
           </div>
         </div>
-        <div data-ng-if="counts.percentage" class="fbdownload-download">
+        <div data-ng-if="counts.percentage" class="downu-download">
           <div>
             Downloading: {{counts.percentage * 100 | number:2}}%
           </div>
@@ -58,30 +58,30 @@
       </div>
     </div>
 
-    <div class="fbdownload-pane-2" ng-if="api.me.albums.length && debug">
+    <div class="downu-pane-2" ng-if="api.me.albums.length && debug">
       <ol>
-        <li ng-repeat="album in api.me.albums | orderBy:'name' | limitTo: 3" class="fbdownload-album">
+        <li ng-repeat="album in api.me.albums | orderBy:'name' | limitTo: 3" class="downu-album">
           {{album.name}} - {{album.pictures.length}}
 
           <ul>
-            <li class="fbdownload-list-item" ng-repeat="picture in album.pictures">
-              <img ng-src="{{picture.images[0].source}}" class="fbdownload-list-item-image" />
+            <li class="downu-list-item" ng-repeat="picture in album.pictures">
+              <img ng-src="{{picture.images[0].source}}" class="downu-list-item-image" />
             </li>
           </ul>
         </li>
       </ol>
     </div>
 
-    <div class="fbdownload-pane-footer">
-      <ul class="fbdownload-pane-footer-links">
+    <div class="downu-pane-footer">
+      <ul class="downu-pane-footer-links">
         <li>
-          <a href="https://github.com/christianv/fbdownload/issues">Feedback</a>
+          <a href="https://github.com/christianv/downu/issues">Feedback</a>
         </li>
         <li ng-if="api.me.albums.length">
-          <button class="fbdownload-button-link" ng-click="logout()">Logout</button>
+          <button class="downu-button-link" ng-click="logout()">Logout</button>
         </li>
       </ul>
-      <div class="fbdownload-pane-footer-line">
+      <div class="downu-pane-footer-line">
         Made with &hearts; by <a href="http://denbuzze.com/">Christian Vuerings</a>
       </div>
     </div>
@@ -94,18 +94,18 @@
     /**
      * Initialize all of the submodules
      */
-    angular.module('fbdownload.controllers', []);
+    angular.module('downu.controllers', []);
 
     /**
-     * fbdownload module
+     * downu module
      */
-    var fbdownload = angular.module('fbdownload', [
-      'fbdownload.controllers',
+    var downu = angular.module('downu', [
+      'downu.controllers',
       'highcharts-ng'
     ]);
 
     // Bind datacultures to the window object so it's globally accessible
-    win.fbdownload = fbdownload;
+    win.downu = downu;
 
   })(window, window.angular);
 
@@ -114,9 +114,9 @@
     'use strict';
 
     /**
-     * fbdownload download controller
+     * downu download controller
      */
-    angular.module('fbdownload.controllers').controller('DownloadController', function($http, $q, $scope) {
+    angular.module('downu.controllers').controller('DownloadController', function($http, $q, $scope) {
 
       var resetCounts = function() {
         $scope.counts = {
@@ -290,9 +290,9 @@
     'use strict';
 
     /**
-     * fbdownload main controller
+     * downu main controller
      */
-    angular.module('fbdownload.controllers').controller('MainController', function($http, $scope) {
+    angular.module('downu.controllers').controller('MainController', function($http, $scope) {
 
       var resetData = function() {
         $scope.api = {

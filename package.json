@@ -1,5 +1,5 @@
 {
-  "name": "fbdownload",
+  "name": "downu",
   "version": "1.0.0",
   "description": "Download facebook pics / videos & info",
   "main": "server.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/christianv/fbdownload.git"
+    "url": "https://github.com/christianv/downu.git"
   },
   "author": "Christian Vuerings <vueringschristian@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/christianv/fbdownload/issues"
+    "url": "https://github.com/christianv/downu/issues"
   },
-  "homepage": "https://github.com/christianv/fbdownload",
+  "homepage": "https://github.com/christianv/downu",
   "dependencies": {
     "express": "^4.10.6"
   }

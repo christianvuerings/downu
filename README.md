@@ -8,8 +8,15 @@ Download your high-res Facebook photos
 node server.js
 ```
 
-## Update heroku
+## Heroku
 
+### Add
+
+```
+heroku git:remote -a downu
+```
+
+### Push
 ```
 git push heroku master
 ```
