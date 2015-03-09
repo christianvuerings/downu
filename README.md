@@ -1,4 +1,4 @@
-# FB Download
+# Downu
 
 Download your high-res Facebook photos
 
