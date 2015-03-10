@@ -107,13 +107,14 @@ body {
   border: 0;
   color: #fff;
   cursor: pointer;
-  font-size: 19px;
+  font-family: Helvetica;
   font-weight: normal;
   justify-content: center;
   text-decoration: underline;
 }
 .downu-pane-footer-links a, .downu-button-link {
   color: #fff;
+  font-size: 20px;
   padding: 15px;
 }
 .downu-pane-footer-links li {
