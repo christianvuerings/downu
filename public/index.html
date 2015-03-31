@@ -116,7 +116,7 @@
     /**
      * downu download controller
      */
-    angular.module('downu.controllers').controller('DownloadController', function($http, $q, $scope) {
+    angular.module('downu.controllers').controller('DownloadController', function($http, $q, $scope, $window) {
 
       var resetCounts = function() {
         $scope.counts = {
@@ -126,6 +126,18 @@
         };
       };
       resetCounts();
+
+      var gaDownload = function() {
+        if ($window.ga) {
+          $window.ga('send', 'event', 'pictures', 'download start');
+        }
+      };
+
+      var gaDownloaded = function() {
+        if ($window.ga) {
+          $window.ga('send', 'event', 'pictures', 'downloaded');
+        }
+      };
 
       /**
        * Fetch the content, add it to the JSZip object
@@ -230,6 +242,7 @@
       };
 
       var downloadZip = function(zip) {
+        gaDownloaded();
         if (JSZip.support.blob) {
           var blob = zip.generate({
             type: 'blob'
@@ -246,6 +259,7 @@
       };
 
       var downloadAlbums = function(albums) {
+        gaDownload();
 
         var zip = new JSZip();
         var deferreds = [];
@@ -292,7 +306,7 @@
     /**
      * downu main controller
      */
-    angular.module('downu.controllers').controller('MainController', function($http, $scope) {
+    angular.module('downu.controllers').controller('MainController', function($http, $scope, $window) {
 
       var resetData = function() {
         $scope.api = {
@@ -307,9 +321,31 @@
       $scope.loading = true;
       $scope.debug = false;
 
+      /**
+       * Set the google analytics ID
+       */
+      var gaSetId = function(uid) {
+        if ($window.ga && uid) {
+          $window.ga('set', '&uid', uid);
+        }
+      };
+
+      var gaLogin = function() {
+        if ($window.ga) {
+          $window.ga('send', 'event', 'authentication', 'login');
+        }
+      };
+
+      var gaLogout = function() {
+        if ($window.ga) {
+          $window.ga('send', 'event', 'authentication', 'logout');
+        }
+      };
+
       var getMeInfo = function() {
         FB.api('/me', function(response) {
           // console.log(response);
+          gaSetId(response.id);
           $scope.api.me.profile = response;
           $scope.$evalAsync();
         });
@@ -422,6 +458,7 @@
       };
 
       function login() {
+        gaLogin();
         FB.login(function(response) {
           // console.log(3, response);
           $scope.loading = true;
@@ -434,6 +471,7 @@
       }
 
       var logout = function() {
+        gaLogout()
         FB.logout(function(response) {
           resetData();
           $scope.$evalAsync();
